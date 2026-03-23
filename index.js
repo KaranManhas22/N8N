@@ -1,10 +1,20 @@
-const http = require('http');
+const express = require("express");
+const { exec } = require("child_process");
 
-const server = http.createServer((req, res) => {
-    res.write("Hello Karan manhas! Your Node.js server is running 🚀");
-    res.end();
+const app = express();
+
+app.get("/deploy", (req, res) => {
+  exec(
+    "cd /home/ubuntu/your-project && git pull origin main && npm install && pm2 restart node-app",
+    (error, stdout, stderr) => {
+      if (error) {
+        return res.send(`Error: ${error.message}`);
+      }
+      res.send("Deployment Done 🚀");
+    }
+  );
 });
 
-server.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });
